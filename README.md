@@ -3,84 +3,70 @@
 Lextris is an open-source 2D JavaScript puzzle game that combines the fast-paced mechanics of Tetris with the challenge of word games.  
 Letters fall as blocks, and players must form valid words to clear lines, score points, and keep the board from filling up.
 
-## Features
-- Word + Tetris mashup: clear lines by forming valid words
-- Dictionary-based validation with support for multiple languages
-- Combos and multipliers for longer words and rare letters
-- Designed to be easy to extend with new power-ups, themes, or modes
+This repository is currently in **planning and early development**. The goal is to build Lextris step by step with a clear roadmap, while keeping the project open to contributors from the very beginning.
 
-## Getting Started
+## Development Plan
 
-### Clone the repo
-```bash
-git clone https://github.com/elias-ba/lextris.git
-cd lextris
-````
+### Phase 1 — Core Prototype
+- [ ] Implement 10×20 grid and falling letter blocks
+- [ ] Add basic player controls (move left/right, rotate, soft drop)
+- [ ] Lock pieces when they reach the bottom or stack
+- [ ] Render grid and letters with Canvas or Phaser
+- [ ] Implement simple scoring system
+- [ ] Integrate a small local dictionary for word validation
+- [ ] Detect horizontal words and clear lines when valid
 
-### Install dependencies
+### Phase 2 — Basic Gameplay Loop
+- [ ] Add vertical word detection
+- [ ] Introduce level progression (faster falling over time)
+- [ ] Display score, level, and cleared words on HUD
+- [ ] Add simple sound effects (drop, word clear, game over)
+- [ ] Game over screen + restart option
 
-```bash
-npm install
-```
+### Phase 3 — Polish & Features
+- [ ] Combos and multipliers (bonuses for long words and rare letters)
+- [ ] Power-ups (wildcards, bombs, multipliers)
+- [ ] Expanded dictionary and multi-language support
+- [ ] Configurable settings (volume, speed, theme)
 
-### Run locally
+### Phase 4 — Community & Scaling
+- [ ] Puzzle mode with predefined challenges
+- [ ] Daily challenge mode with seed-based boards
+- [ ] Leaderboards (local first, then online)
+- [ ] Mobile-friendly controls and layout
+- [ ] Open up for community-created themes and mods
 
-```bash
-npm run dev
-```
+### Phase 5 — Advanced
+- [ ] Multiplayer battle mode (send “garbage letters” to opponents)
+- [ ] Progressive web app (PWA) for offline play
+- [ ] Server integration (leaderboards, real-time multiplayer)
+- [ ] Additional game modes (time attack, survival, sandbox)
 
-### Build for production
-
-```bash
-npm run build
-```
-
-## Gameplay
-
-* Move falling letters with **← / →**
-* Rotate with **↑**
-* Soft drop with **↓**
-* Words are detected horizontally and vertically
-* Valid words clear lines and earn points
-* Longer words earn higher scores
-
-## Roadmap
-
-* Power-ups (wildcards, bombs, multipliers)
-* Puzzle mode with predefined challenges
-* Daily challenges and leaderboards
-* Multiplayer battle mode
-* Expanded dictionary support
-
-## Tech Stack
-
-* Vite for fast development and builds
-* Phaser 3 for rendering and input
-* Web Workers for word validation
-* Web Audio API for sound effects
+## Tech Stack (Planned)
+- Vite + TypeScript for development
+- Phaser 3 (or Canvas 2D) for rendering and input
+- Web Workers for dictionary lookups
+- Web Audio API for sound effects
+- IndexedDB for offline dictionary storage
+- Deployment via GitHub Pages or Netlify
 
 ## Contributing
+This project is at a very early stage. Contributions are welcome in the form of:
+- Code (prototype features, refactors, bug fixes)
+- Design (UI/UX, themes, logos, assets)
+- Dictionaries (word lists for different languages)
+- Ideas (new game modes, mechanics, feedback)
 
-Contributions are welcome. You can help by:
-
-* Adding features or mechanics
-* Improving performance and code quality
-* Designing new skins or themes
-* Expanding word lists and dictionaries
-
-To contribute:
-
-1. Fork the repo
-2. Create a new branch: `git checkout -b feature/my-feature`
-3. Commit your changes: `git commit -m 'Add my feature'`
-4. Push to the branch: `git push origin feature/my-feature`
-5. Open a Pull Request
+To get involved:
+1. Fork the repo  
+2. Create a branch: `git checkout -b feature/my-feature`  
+3. Commit your changes: `git commit -m 'Add my feature'`  
+4. Push: `git push origin feature/my-feature`  
+5. Open a Pull Request  
 
 ## License
-
-This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+This project will be released under the MIT License. See the [LICENSE](LICENSE) file once it is created.
 
 ## Acknowledgements
-
-* Inspired by Tetris, Scrabble, and Wordle
-* Thanks to the open-source community for ideas and contributions
+- Inspired by Tetris, Scrabble, and Wordle  
+- Thanks in advance to the open-source community that will help shape Lextris
