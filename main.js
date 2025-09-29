@@ -1,10 +1,53 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-const BLOCK_SIZE = 30;
+let BLOCK_SIZE = 30;
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
-canvas.width = BLOCK_SIZE * BOARD_WIDTH;
-canvas.height = BLOCK_SIZE * BOARD_HEIGHT;
+
+function resizeCanvas() {
+  const gameBoard = document.querySelector(".game-board");
+  const sidePanel = document.querySelector(".side-panel");
+
+  let maxWidth, maxHeight;
+
+  if (window.innerWidth > 768) {
+    const sidePanelWidth = sidePanel ? sidePanel.offsetWidth : 280;
+    maxWidth = window.innerWidth - sidePanelWidth;
+    maxHeight = window.innerHeight;
+  } else {
+    maxWidth = window.innerWidth;
+    maxHeight = window.innerHeight * 0.65;
+  }
+
+  const blockSizeByWidth = Math.floor(maxWidth / BOARD_WIDTH);
+  const blockSizeByHeight = Math.floor(maxHeight / BOARD_HEIGHT);
+
+  BLOCK_SIZE = Math.min(blockSizeByWidth, blockSizeByHeight);
+  BLOCK_SIZE = Math.max(BLOCK_SIZE, 15);
+
+  canvas.width = BLOCK_SIZE * BOARD_WIDTH;
+  canvas.height = BLOCK_SIZE * BOARD_HEIGHT;
+
+  if (window.innerWidth > 768) {
+    canvas.style.position = "absolute";
+    canvas.style.left = "0";
+    canvas.style.top = "50%";
+    canvas.style.transform = "translateY(-50%)";
+  } else {
+    canvas.style.position = "relative";
+    canvas.style.left = "auto";
+    canvas.style.top = "auto";
+    canvas.style.transform = "none";
+    canvas.style.margin = "0 auto";
+  }
+}
+
+window.addEventListener("resize", () => {
+  resizeCanvas();
+  drawBoard();
+});
+
+resizeCanvas();
 
 const WORD_LIST = [
   "THE",
@@ -249,48 +292,48 @@ const LETTER_WEIGHTS = {
 };
 
 const TETROMINOES = [
-  { shape: [[1, 1, 1, 1]], color: "#00f0f0" },
+  { shape: [[1, 1, 1, 1]], color: "#4A90E2" },
   {
     shape: [
       [1, 1],
       [1, 1],
     ],
-    color: "#f0f000",
+    color: "#7ED321",
   },
   {
     shape: [
       [0, 1, 1],
       [1, 1, 0],
     ],
-    color: "#00f000",
+    color: "#F5A623",
   },
   {
     shape: [
       [1, 1, 0],
       [0, 1, 1],
     ],
-    color: "#f00000",
+    color: "#BD10E0",
   },
   {
     shape: [
       [1, 0, 0],
       [1, 1, 1],
     ],
-    color: "#0000f0",
+    color: "#50E3C2",
   },
   {
     shape: [
       [0, 0, 1],
       [1, 1, 1],
     ],
-    color: "#f0a000",
+    color: "#F8E71C",
   },
   {
     shape: [
       [0, 1, 0],
       [1, 1, 1],
     ],
-    color: "#a000f0",
+    color: "#E94B3C",
   },
 ];
 
@@ -300,9 +343,11 @@ let nextPiece = null;
 let score = 0;
 let level = 1;
 let gameRunning = false;
+let gamePaused = false;
 let dropTimer = 0;
 let dropSpeed = 48;
 let foundWords = [];
+let animationId = null;
 
 function getRandomLetter() {
   const totalWeight = Object.values(LETTER_WEIGHTS).reduce((a, b) => a + b, 0);
@@ -345,11 +390,26 @@ function initBoard() {
 
 function drawBlock(x, y, color, letter = "") {
   ctx.fillStyle = color;
-  ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE - 2, BLOCK_SIZE - 2);
+  ctx.fillRect(
+    x * BLOCK_SIZE + 1,
+    y * BLOCK_SIZE + 1,
+    BLOCK_SIZE - 2,
+    BLOCK_SIZE - 2
+  );
+
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(
+    x * BLOCK_SIZE + 1,
+    y * BLOCK_SIZE + 1,
+    BLOCK_SIZE - 2,
+    BLOCK_SIZE - 2
+  );
 
   if (letter) {
-    ctx.fillStyle = "#000";
-    ctx.font = "bold 18px Courier New";
+    ctx.fillStyle = "#ffffff";
+    const fontSize = Math.max(12, Math.floor(BLOCK_SIZE * 0.6));
+    ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(
@@ -363,7 +423,7 @@ function drawBlock(x, y, color, letter = "") {
 function drawBoard() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+  ctx.strokeStyle = "rgba(0, 0, 0, 0.03)";
   ctx.lineWidth = 1;
   for (let x = 0; x <= BOARD_WIDTH; x++) {
     ctx.beginPath();
@@ -381,7 +441,7 @@ function drawBoard() {
   for (let y = 0; y < BOARD_HEIGHT; y++) {
     for (let x = 0; x < BOARD_WIDTH; x++) {
       if (board[y][x]) {
-        drawBlock(x, y, "#888", board[y][x]);
+        drawBlock(x, y, "#9B9B9B", board[y][x]);
       }
     }
   }
@@ -574,11 +634,13 @@ function updateScore(words) {
     }
   }
 
-  document.getElementById("score").textContent = score;
+  document.getElementById("score").textContent = score.toLocaleString();
 
   const wordsDiv = document.getElementById("wordsFound");
   wordsDiv.innerHTML = foundWords
-    .map((w) => `<div class="word-item">${w.word} +${w.points}</div>`)
+    .map(
+      (w) => `<div class="word-item">${w.word} <span>+${w.points}</span></div>`
+    )
     .join("");
 
   const newLevel = Math.floor(score / 1000) + 1;
@@ -595,12 +657,17 @@ function checkGameOver() {
 
 function gameOver() {
   gameRunning = false;
-  document.getElementById("finalScore").textContent = score;
+  document.getElementById("finalScore").textContent = score.toLocaleString();
   document.getElementById("gameOver").style.display = "block";
 }
 
 function update() {
-  if (!gameRunning) return;
+  if (!gameRunning || gamePaused) {
+    if (gameRunning && !gamePaused) {
+      animationId = requestAnimationFrame(update);
+    }
+    return;
+  }
 
   dropTimer++;
   if (dropTimer >= dropSpeed) {
@@ -623,16 +690,17 @@ function update() {
 
       if (checkGameOver()) {
         gameOver();
+        return;
       }
     }
   }
 
   drawBoard();
-  requestAnimationFrame(update);
+  animationId = requestAnimationFrame(update);
 }
 
 function handleKeyPress(e) {
-  if (!gameRunning || !currentPiece) return;
+  if (!gameRunning || !currentPiece || gamePaused) return;
 
   switch (e.key) {
     case "ArrowLeft":
@@ -655,21 +723,35 @@ function handleKeyPress(e) {
       rotatePiece();
       break;
     case " ":
+      e.preventDefault();
       while (isValidPosition(currentPiece, 0, 1)) {
         currentPiece.y++;
       }
       dropTimer = dropSpeed;
+      break;
+    case "p":
+    case "P":
+      togglePause();
+      break;
+    case "r":
+    case "R":
+      if (gameRunning) {
+        resetGame();
+      }
       break;
   }
 }
 
 function startGame() {
   document.getElementById("startScreen").style.display = "none";
+  document.getElementById("pausedOverlay").style.display = "none";
+  resizeCanvas();
   initBoard();
   score = 0;
   level = 1;
   foundWords = [];
   dropSpeed = 48;
+  gamePaused = false;
   document.getElementById("score").textContent = "0";
   document.getElementById("level").textContent = "1";
   document.getElementById("wordsFound").innerHTML = "";
@@ -677,12 +759,85 @@ function startGame() {
   nextPiece = createPiece();
   drawNextPiece();
   gameRunning = true;
+  updateControlButtons();
   update();
 }
 
-function resetGame() {
-  document.getElementById("gameOver").style.display = "none";
-  startGame();
+function pauseGame() {
+  if (!gameRunning || !currentPiece) return;
+  gamePaused = true;
+  document.getElementById("pausedOverlay").style.display = "block";
+  updateControlButtons();
 }
+
+function resumeGame() {
+  if (!gameRunning) return;
+  gamePaused = false;
+  document.getElementById("pausedOverlay").style.display = "none";
+  updateControlButtons();
+  update();
+}
+
+function togglePause() {
+  if (!gameRunning) return;
+  if (gamePaused) {
+    resumeGame();
+  } else {
+    pauseGame();
+  }
+}
+
+function resetGame() {
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+  }
+
+  document.getElementById("gameOver").style.display = "none";
+  document.getElementById("pausedOverlay").style.display = "none";
+
+  if (!gameRunning) {
+    document.getElementById("startScreen").style.display = "block";
+  } else {
+    startGame();
+  }
+}
+
+function updateControlButtons() {
+  const playBtn = document.getElementById("playBtn");
+  const pauseBtn = document.getElementById("pauseBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  if (!playBtn || !pauseBtn || !resetBtn) return;
+
+  playBtn.classList.remove("active");
+  pauseBtn.classList.remove("active");
+  resetBtn.classList.remove("active");
+
+  if (!gameRunning) {
+    playBtn.disabled = false;
+    pauseBtn.disabled = true;
+    resetBtn.disabled = true;
+    playBtn.innerHTML = "▶";
+    playBtn.title = "Play";
+  } else if (gamePaused) {
+    playBtn.disabled = false;
+    pauseBtn.disabled = true;
+    resetBtn.disabled = false;
+    playBtn.innerHTML = "▶";
+    playBtn.title = "Resume";
+    pauseBtn.classList.add("active");
+  } else {
+    playBtn.disabled = true;
+    pauseBtn.disabled = false;
+    resetBtn.disabled = false;
+    playBtn.innerHTML = "▶";
+    playBtn.title = "Play";
+    playBtn.classList.add("active");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  updateControlButtons();
+});
 
 document.addEventListener("keydown", handleKeyPress);

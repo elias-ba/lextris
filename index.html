@@ -1,67 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Word Tetris</title>
-    <link rel="stylesheet" href="app.css">
-</head>
-<body>
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
     <div class="game-container">
-        <div class="game-board">
-            <canvas id="gameCanvas"></canvas>
-            <div class="start-screen" id="startScreen">
-                <h1>WORD TETRIS</h1>
-                <p>Form words to clear lines!</p>
-                <button onclick="startGame()">START GAME</button>
-            </div>
-            <div class="game-over" id="gameOver">
-                <h2>GAME OVER</h2>
-                <p>Final Score: <span id="finalScore">0</span></p>
-                <button onclick="resetGame()">PLAY AGAIN</button>
-            </div>
+      <div class="game-board">
+        <canvas id="gameCanvas"></canvas>
+        <div class="start-screen" id="startScreen">
+          <h1>WORD TETRIS</h1>
+          <p>Form words to clear lines!</p>
+          <button onclick="startGame()">START GAME</button>
         </div>
-        <div class="side-panel">
-            <div class="info-box">
-                <h3>Score</h3>
-                <div class="score" id="score">0</div>
-            </div>
-            <div class="info-box">
-                <h3>Level</h3>
-                <div class="level" id="level">1</div>
-            </div>
-            <div class="info-box">
-                <h3>Next Piece</h3>
-                <div class="next-piece" id="nextPiece"></div>
-            </div>
-            <div class="info-box">
-                <h3>Words Found</h3>
-                <div class="words-found" id="wordsFound"></div>
-            </div>
-            <div class="controls">
-                <h3>Controls</h3>
-                <div class="control-item">
-                    <span>Move</span>
-                    <span class="key">← →</span>
-                </div>
-                <div class="control-item">
-                    <span>Rotate</span>
-                    <span class="key">↑</span>
-                </div>
-                <div class="control-item">
-                    <span>Drop</span>
-                    <span class="key">↓</span>
-                </div>
-                <div class="control-item">
-                    <span>Hard Drop</span>
-                    <span class="key">Space</span>
-                </div>
-            </div>
+        <div class="game-over" id="gameOver">
+          <h2>GAME OVER</h2>
+          <p>Final Score: <span id="finalScore">0</span></p>
+          <button onclick="resetGame()">PLAY AGAIN</button>
         </div>
+        <div class="paused-overlay" id="pausedOverlay">
+          <h2>PAUSED</h2>
+          <p>Press P or click Resume to continue</p>
+        </div>
+      </div>
+      <div class="side-panel">
+        <div class="game-controls">
+          <h3>Game Controls</h3>
+          <div class="control-buttons">
+            <button
+              class="control-btn"
+              id="playBtn"
+              onclick="gameRunning ? resumeGame() : startGame()"
+              title="Play/Resume"
+            >
+              ▶
+            </button>
+            <button
+              class="control-btn"
+              id="pauseBtn"
+              onclick="pauseGame()"
+              title="Pause"
+            >
+              ⏸
+            </button>
+            <button
+              class="control-btn"
+              id="resetBtn"
+              onclick="resetGame()"
+              title="Reset"
+            >
+              ↺
+            </button>
+          </div>
+        </div>
+        <div class="info-box">
+          <h3>Score</h3>
+          <div class="score" id="score">0</div>
+        </div>
+        <div class="info-box">
+          <h3>Level</h3>
+          <div class="level" id="level">1</div>
+        </div>
+        <div class="info-box">
+          <h3>Next Piece</h3>
+          <div class="next-piece" id="nextPiece"></div>
+        </div>
+        <div class="info-box">
+          <h3>Words Found</h3>
+          <div class="words-found" id="wordsFound"></div>
+        </div>
+        <div class="controls">
+          <h3>Keyboard Controls</h3>
+          <div class="control-item">
+            <span>Move</span>
+            <span class="key">← →</span>
+          </div>
+          <div class="control-item">
+            <span>Rotate</span>
+            <span class="key">↑</span>
+          </div>
+          <div class="control-item">
+            <span>Soft Drop</span>
+            <span class="key">↓</span>
+          </div>
+          <div class="control-item">
+            <span>Hard Drop</span>
+            <span class="key">Space</span>
+          </div>
+          <div class="control-item">
+            <span>Pause/Resume</span>
+            <span class="key">P</span>
+          </div>
+          <div class="control-item">
+            <span>Reset</span>
+            <span class="key">R</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="main.js"></script>
-    
-    </script>
-</body>
+  </body>
 </html>
