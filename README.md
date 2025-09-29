@@ -7,7 +7,7 @@ This repository is currently in **planning and early development**. The goal is 
 
 ## Development Plan
 
-### Phase 1 — Core Prototype
+### Phase 1: Core Prototype
 - [ ] Implement 10×20 grid and falling letter blocks
 - [ ] Add basic player controls (move left/right, rotate, soft drop)
 - [ ] Lock pieces when they reach the bottom or stack
@@ -16,33 +16,33 @@ This repository is currently in **planning and early development**. The goal is 
 - [ ] Integrate a small local dictionary for word validation
 - [ ] Detect horizontal words and clear lines when valid
 
-### Phase 2 — Basic Gameplay Loop
+### Phase 2: Basic Gameplay Loop
 - [ ] Add vertical word detection
 - [ ] Introduce level progression (faster falling over time)
 - [ ] Display score, level, and cleared words on HUD
 - [ ] Add simple sound effects (drop, word clear, game over)
 - [ ] Game over screen + restart option
 
-### Phase 3 — Polish & Features
+### Phase 3: Polish & Features
 - [ ] Combos and multipliers (bonuses for long words and rare letters)
 - [ ] Power-ups (wildcards, bombs, multipliers)
 - [ ] Expanded dictionary and multi-language support
 - [ ] Configurable settings (volume, speed, theme)
 
-### Phase 4 — Community & Scaling
+### Phase 4: Community & Scaling
 - [ ] Puzzle mode with predefined challenges
 - [ ] Daily challenge mode with seed-based boards
 - [ ] Leaderboards (local first, then online)
 - [ ] Mobile-friendly controls and layout
 - [ ] Open up for community-created themes and mods
 
-### Phase 5 — Advanced
+### Phase 5: Advanced
 - [ ] Multiplayer battle mode (send “garbage letters” to opponents)
 - [ ] Progressive web app (PWA) for offline play
 - [ ] Server integration (leaderboards, real-time multiplayer)
 - [ ] Additional game modes (time attack, survival, sandbox)
 
-## Tech Stack (Planned)
+## Tech Stack (Planned, may change)
 - Vite + TypeScript for development
 - Phaser 3 (or Canvas 2D) for rendering and input
 - Web Workers for dictionary lookups
